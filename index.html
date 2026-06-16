@@ -1,111 +1,88 @@
 <script>
 
 const countryOwners = {
-  "Algeria": "Grace",
-  "Argentina": "Richard",
   "Australia": "Jack",
-  "Austria": "Andrei",
-  "Belgium": "Alex R",
-  "Bosnia and Herzegovina": "Sharon",
-  "Brazil": "Josh",
-  "Canada": "Tanya",
-  "Cape Verde": "Richard",
-  "Colombia": "Corey",
-  "Congo DR": "Bazi",
-  "Croatia": "Alex B",
-  "Curaçao": "Amos",
-  "Czechia": "SJ",
-  "Ecuador": "Corrinne",
-  "Egypt": "Harry",
-  "England": "Sam",
-  "France": "Sharon",
-  "Germany": "Amos",
-  "Ghana": "Andrei",
-  "Haiti": "Tanya",
-  "Iran": "Jack",
-  "Iraq": "Hamish",
-  "Ivory Coast": "Michelle",
-  "Japan": "Serena-Jo",
-  "Jordan": "Serena-Jo",
-  "Mexico": "SJ",
-  "Morocco": "Casey",
-  "Netherlands": "Josh",
-  "New Zealand": "Hope",
-  "Norway": "Hamish",
-  "Panama": "Grace",
-  "Paraguay": "Selena",
-  "Portugal": "Judah",
   "Qatar": "Ben",
-  "Saudi Arabia": "Hope",
-  "Scotland": "Ben",
-  "Senegal": "Tony",
-  "South Africa": "Sam",
-  "South Korea": "Harry",
-  "Spain": "Bazi",
-  "Sweden": "Alex B",
   "Switzerland": "Mya",
-  "Tunisia": "Mya",
   "Turkey": "Corrinne",
-  "United States": "Caseu",
-  "Uruguay": "Michelle",
-  "Uzbekistan": "Judah"
+  "United States": "Caseu"
 };
 
-function getOwner(teamName) {
-  return countryOwners[teamName] || "Unassigned";
+function getOwner(team) {
+  return countryOwners[team] || "Unassigned";
 }
 
 async function loadMatches() {
 
   const container = document.getElementById("matches");
 
+  container.innerHTML = "Loading API...";
+
   try {
 
     const res = await fetch("https://worldcup26.ir/get/games");
+
+    container.innerHTML = "Parsing JSON...";
+
     const data = await res.json();
+
+    // 🔴 DEBUG: show raw structure first
+    console.log("FULL API RESPONSE:", data);
 
     const matches = data.games;
 
-    container.innerHTML = matches.map(match => {
+    if (!matches) {
+      container.innerHTML =
+        "❌ 'games' not found. API structure is different.<br><br>" +
+        "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+      return;
+    }
 
-      const homeOwner = getOwner(match.home_team_name_en);
-      const awayOwner = getOwner(match.away_team_name_en);
+    container.innerHTML = "";
 
-      return `
-        <div class="card">
+    matches.forEach(match => {
+
+      const home = match.home_team_name_en;
+      const away = match.away_team_name_en;
+
+      container.innerHTML += `
+        <div style="background:#1e1e1e; padding:12px; margin-bottom:10px; border-radius:10px;">
 
           <div style="display:flex; justify-content:space-between;">
 
             <div>
-              <div><b>${match.home_team_name_en}</b></div>
-              <div class="owner">${homeOwner}</div>
+              <b>${home}</b>
+              <div style="color:#00d26a; font-size:12px;">
+                ${getOwner(home)}
+              </div>
             </div>
 
-            <div style="font-size:20px;">
+            <div>
               ${match.home_score} - ${match.away_score}
             </div>
 
             <div style="text-align:right;">
-              <div><b>${match.away_team_name_en}</b></div>
-              <div class="owner">${awayOwner}</div>
+              <b>${away}</b>
+              <div style="color:#00d26a; font-size:12px;">
+                ${getOwner(away)}
+              </div>
             </div>
 
-          </div>
-
-          <div style="margin-top:8px; font-size:12px; opacity:0.6;">
-            ${match.finished === "TRUE" ? "FT" : "Upcoming"}
-            • Group ${match.group}
-            • ${match.local_date}
           </div>
 
         </div>
       `;
 
-    }).join("");
+    });
 
   } catch (err) {
-    container.innerHTML = "Error loading matches";
+
     console.error(err);
+
+    container.innerHTML =
+      "❌ JavaScript error:<br><br>" +
+      err.message;
+
   }
 }
 
