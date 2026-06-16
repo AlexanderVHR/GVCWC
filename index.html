@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <title>World Cup Sweepstake</title>
 
 <style>
@@ -14,8 +15,8 @@ body{
 .card{
     background:#1e1e1e;
     padding:15px;
-    margin-bottom:10px;
     border-radius:10px;
+    margin-bottom:10px;
 }
 
 .owner{
@@ -23,26 +24,54 @@ body{
     font-weight:bold;
 }
 </style>
-</head>
 
+</head>
 <body>
 
-<h1>🏆 FIFA World Cup 2026 Sweepstake</h1>
+<h1>🏆 World Cup Sweepstake</h1>
 
-<div class="card">
-    <h2>Brazil</h2>
-    <div class="owner">Josh</div>
+<div id="matches">
+Loading...
 </div>
 
-<div class="card">
-    <h2>France</h2>
-    <div class="owner">Sharon</div>
-</div>
+<script>
 
-<div class="card">
-    <h2>Germany</h2>
-    <div class="owner">Amos</div>
-</div>
+const countryOwners = {
+    "Brazil":"Josh",
+    "France":"Sharon",
+    "Germany":"Amos",
+    "England":"Sam",
+    "Argentina":"Richard"
+};
+
+async function loadMatches(){
+
+    try{
+
+        const response =
+            await fetch("https://worldcup26.ir/get/games");
+
+        const matches =
+            await response.json();
+
+        document.getElementById("matches").innerHTML =
+            "API connected successfully.<br>" +
+            "Matches found: " +
+            matches.length;
+
+    }
+    catch(err){
+
+        document.getElementById("matches").innerHTML =
+            "API connection failed";
+
+        console.error(err);
+    }
+}
+
+loadMatches();
+
+</script>
 
 </body>
 </html>
