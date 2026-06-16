@@ -1,91 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>World Cup Sweepstake</title>
+
+<style>
+body {
+    background:#111;
+    color:white;
+    font-family:Arial;
+    padding:20px;
+}
+
+.card {
+    background:#1e1e1e;
+    padding:12px;
+    margin-bottom:10px;
+    border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🏆 Sweepstake Test</h1>
+
+<div id="matches"></div>
+
 <script>
+console.log("SCRIPT STARTED");
 
-const countryOwners = {
-  "Australia": "Jack",
-  "Qatar": "Ben",
-  "Switzerland": "Mya",
-  "Turkey": "Corrinne",
-  "United States": "Caseu"
-};
+document.getElementById("matches").innerHTML = "JS is running ✅";
 
-function getOwner(team) {
-  return countryOwners[team] || "Unassigned";
-}
+const testData = [
+    { home: "Australia", away: "Turkey", score: "2 - 0" },
+    { home: "Qatar", away: "Switzerland", score: "1 - 1" }
+];
 
-async function loadMatches() {
+const container = document.getElementById("matches");
 
-  const container = document.getElementById("matches");
+container.innerHTML = "";
 
-  container.innerHTML = "Loading API...";
-
-  try {
-
-    const res = await fetch("https://worldcup26.ir/get/games");
-
-    container.innerHTML = "Parsing JSON...";
-
-    const data = await res.json();
-
-    // 🔴 DEBUG: show raw structure first
-    console.log("FULL API RESPONSE:", data);
-
-    const matches = data.games;
-
-    if (!matches) {
-      container.innerHTML =
-        "❌ 'games' not found. API structure is different.<br><br>" +
-        "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
-      return;
-    }
-
-    container.innerHTML = "";
-
-    matches.forEach(match => {
-
-      const home = match.home_team_name_en;
-      const away = match.away_team_name_en;
-
-      container.innerHTML += `
-        <div style="background:#1e1e1e; padding:12px; margin-bottom:10px; border-radius:10px;">
-
-          <div style="display:flex; justify-content:space-between;">
-
-            <div>
-              <b>${home}</b>
-              <div style="color:#00d26a; font-size:12px;">
-                ${getOwner(home)}
-              </div>
-            </div>
-
-            <div>
-              ${match.home_score} - ${match.away_score}
-            </div>
-
-            <div style="text-align:right;">
-              <b>${away}</b>
-              <div style="color:#00d26a; font-size:12px;">
-                ${getOwner(away)}
-              </div>
-            </div>
-
-          </div>
-
+testData.forEach(m => {
+    container.innerHTML += `
+        <div class="card">
+            <b>${m.home}</b> vs <b>${m.away}</b><br>
+            ${m.score}
         </div>
-      `;
-
-    });
-
-  } catch (err) {
-
-    console.error(err);
-
-    container.innerHTML =
-      "❌ JavaScript error:<br><br>" +
-      err.message;
-
-  }
-}
-
-loadMatches();
+    `;
+});
 
 </script>
+
+</body>
+</html>
