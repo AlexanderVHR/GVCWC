@@ -1,90 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 FIFA Workplace Sweepstakes</title>
+
+<style>
+:root{
+  --bg:#0f1115;
+  --card:#171a21;
+  --card2:#1e232d;
+  --border:#2a3140;
+  --text:#ffffff;
+  --muted:#9ca3af;
+  --green:#22c55e;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Inter,Arial,sans-serif;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+}
+
+.header{
+  background:#111827;
+  padding:18px;
+  text-align:center;
+  border-bottom:1px solid var(--border);
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+
+.header h1{
+  font-size:22px;
+}
+
+.tabs{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:12px;
+  background:#111827;
+}
+
+.tab{
+  padding:10px 16px;
+  border-radius:999px;
+  border:none;
+  background:var(--card);
+  color:white;
+  cursor:pointer;
+}
+
+.tab.active{
+  background:var(--green);
+  color:black;
+  font-weight:bold;
+}
+
+.section{
+  display:none;
+  padding:15px;
+  max-width:1000px;
+  margin:auto;
+}
+
+.section.active{
+  display:block;
+}
+
+.card{
+  background:var(--card);
+  border-radius:14px;
+  padding:14px;
+  margin-bottom:12px;
+  border:1px solid var(--border);
+}
+
+.table-row{
+  display:grid;
+  grid-template-columns:40px 1fr 1fr 60px;
+  gap:10px;
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.table-row:last-child{
+  border-bottom:none;
+}
+
+.country{
+  font-weight:600;
+}
+
+.owner{
+  color:var(--muted);
+}
+
+.points{
+  text-align:right;
+  color:var(--green);
+  font-weight:bold;
+}
+
+.leaderboard-row{
+  display:flex;
+  justify-content:space-between;
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.fixture{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.team-card{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px;
+  border-radius:10px;
+  background:var(--card2);
+  margin-bottom:8px;
+}
+
+.badge{
+  background:var(--green);
+  color:black;
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:bold;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🏆 2026 FIFA Workplace Sweepstakes</h1>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('standings',this)">Standings</button>
+  <button class="tab" onclick="showTab('leaderboard',this)">Leaderboard</button>
+  <button class="tab" onclick="showTab('fixtures',this)">Fixtures</button>
+</div>
+
+<div id="standings" class="section active">
+  <div class="card">
+    <h2>Country Ownership</h2>
+    <div id="standingsTable"></div>
+  </div>
+</div>
+
+<div id="leaderboard" class="section">
+  <div class="card">
+    <h2>Staff Leaderboard</h2>
+    <div id="leaderboardTable"></div>
+  </div>
+</div>
+
+<div id="fixtures" class="section">
+  <div class="card">
+    <h2>Upcoming Fixtures</h2>
+
+    <div class="fixture">
+      <span>🇦🇷 Argentina</span>
+      <strong>vs</strong>
+      <span>🇲🇽 Mexico</span>
+    </div>
+
+    <div class="fixture">
+      <span>🇧🇷 Brazil</span>
+      <strong>vs</strong>
+      <span>🇵🇹 Portugal</span>
+    </div>
+
+    <div class="fixture">
+      <span>🇫🇷 France</span>
+      <strong>vs</strong>
+      <span>🇩🇪 Germany</span>
+    </div>
+
+  </div>
+</div>
+
 <script>
+const teams = [
+["Algeria","Grace"],
+["Argentina","Richard"],
+["Australia","Jack"],
+["Austria","Andrei"],
+["Belgium","Alex R"],
+["Bosnia and Herzegovina","Sharon"],
+["Brazil","Josh"],
+["Canada","Tanya"],
+["Cape Verde","Richard"],
+["Colombia","Corey"],
+["Congo DR","Bazi"],
+["Croatia","Alex B"],
+["Curaçao","Amos"],
+["Czechia","SJ"],
+["Ecuador","Corrinne"],
+["Egypt","Harry"],
+["England","Sam"],
+["France","Sharon"],
+["Germany","Amos"],
+["Ghana","Andrei"],
+["Haiti","Tanya"],
+["Iran","Jack"],
+["Iraq","Hamish"],
+["Ivory Coast","Michelle"],
+["Japan","Serena-Jo"],
+["Jordan","Serena-Jo"],
+["Mexico","SJ"],
+["Morocco","Casey"],
+["Netherlands","Josh"],
+["New Zealand","Hope"],
+["Norway","Hamish"],
+["Panama","Grace"],
+["Paraguay","Selena"],
+["Portugal","Judah"],
+["Qatar","Ben"],
+["Saudi Arabia","Hope"],
+["Scotland","Ben"],
+["Senegal","Tony"],
+["South Africa","Sam"],
+["South Korea","Harry"],
+["Spain","Bazi"],
+["Sweden","Alex B"],
+["Switzerland","Mya"],
+["Tunisia","Mya"],
+["Türkiye","Corrinne"],
+["United States","Casey"],
+["Uruguay","Michelle"],
+["Uzbekistan","Judah"]
+];
 
-const countryOwners = {
-  "Australia": "Jack",
-  "Qatar": "Ben",
-  "Switzerland": "Mya",
-  "Turkey": "Corrinne",
-  "United States": "Caseu"
-};
+const standingsTable = document.getElementById("standingsTable");
 
-function getOwner(team) {
-  return countryOwners[team] || "Unassigned";
-}
+teams.forEach((team,i)=>{
+  standingsTable.innerHTML += `
+    <div class="table-row">
+      <div>${i+1}</div>
+      <div class="country">${team[0]}</div>
+      <div class="owner">${team[1]}</div>
+      <div class="points">0</div>
+    </div>
+  `;
+});
 
-async function loadMatches() {
+const owners={};
 
-  const container = document.getElementById("matches");
-
-  container.innerHTML = "Loading API...";
-
-  try {
-
-    const res = await fetch("https://worldcup26.ir/get/games");
-
-    const data = await res.json();
-
-    console.log("API DATA:", data);
-
-    // SAFE fallback: ensure array exists
-    const matches = data.games || [];
-
-    if (!Array.isArray(matches) || matches.length === 0) {
-      container.innerHTML =
-        "No matches found or API format changed.";
-      return;
-    }
-
-    container.innerHTML = "";
-
-    matches.forEach(match => {
-
-      const home = match.home_team_name_en;
-      const away = match.away_team_name_en;
-
-      const homeScore = match.home_score ?? "-";
-      const awayScore = match.away_score ?? "-";
-
-      container.innerHTML += `
-        <div class="card">
-
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-
-            <div>
-              <b>${home}</b>
-              <div style="color:#00d26a; font-size:12px;">
-                ${getOwner(home)}
-              </div>
-            </div>
-
-            <div style="font-size:20px;">
-              ${homeScore} - ${awayScore}
-            </div>
-
-            <div style="text-align:right;">
-              <b>${away}</b>
-              <div style="color:#00d26a; font-size:12px;">
-                ${getOwner(away)}
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-      `;
-
-    });
-
-  } catch (err) {
-
-    console.error(err);
-
-    container.innerHTML =
-      "API error: " + err.message;
-
+teams.forEach(([country,owner])=>{
+  if(!owners[owner]){
+    owners[owner]={
+      points:0,
+      countries:[]
+    };
   }
+
+  owners[owner].countries.push(country);
+});
+
+const leaderboard = document.getElementById("leaderboardTable");
+
+Object.entries(owners)
+.sort((a,b)=>b[1].points-a[1].points)
+.forEach(([owner,data])=>{
+  leaderboard.innerHTML += `
+    <div class="leaderboard-row">
+      <div>
+        <strong>${owner}</strong><br>
+        <small>${data.countries.join(", ")}</small>
+      </div>
+      <div class="badge">${data.points} pts</div>
+    </div>
+  `;
+});
+
+function showTab(tabId,button){
+  document.querySelectorAll(".section")
+    .forEach(x=>x.classList.remove("active"));
+
+  document.querySelectorAll(".tab")
+    .forEach(x=>x.classList.remove("active"));
+
+  document.getElementById(tabId)
+    .classList.add("active");
+
+  button.classList.add("active");
 }
-
-loadMatches();
-
 </script>
+
+</body>
+</html>
