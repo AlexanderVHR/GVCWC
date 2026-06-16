@@ -1,56 +1,90 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>World Cup Sweepstake</title>
-
-<style>
-body {
-    background:#111;
-    color:white;
-    font-family:Arial;
-    padding:20px;
-}
-
-.card {
-    background:#1e1e1e;
-    padding:12px;
-    margin-bottom:10px;
-    border-radius:10px;
-}
-</style>
-</head>
-
-<body>
-
-<h1>🏆 Sweepstake Test</h1>
-
-<div id="matches"></div>
-
 <script>
-console.log("SCRIPT STARTED");
 
-document.getElementById("matches").innerHTML = "JS is running ✅";
+const countryOwners = {
+  "Australia": "Jack",
+  "Qatar": "Ben",
+  "Switzerland": "Mya",
+  "Turkey": "Corrinne",
+  "United States": "Caseu"
+};
 
-const testData = [
-    { home: "Australia", away: "Turkey", score: "2 - 0" },
-    { home: "Qatar", away: "Switzerland", score: "1 - 1" }
-];
+function getOwner(team) {
+  return countryOwners[team] || "Unassigned";
+}
 
-const container = document.getElementById("matches");
+async function loadMatches() {
 
-container.innerHTML = "";
+  const container = document.getElementById("matches");
 
-testData.forEach(m => {
-    container.innerHTML += `
+  container.innerHTML = "Loading API...";
+
+  try {
+
+    const res = await fetch("https://worldcup26.ir/get/games");
+
+    const data = await res.json();
+
+    console.log("API DATA:", data);
+
+    // SAFE fallback: ensure array exists
+    const matches = data.games || [];
+
+    if (!Array.isArray(matches) || matches.length === 0) {
+      container.innerHTML =
+        "No matches found or API format changed.";
+      return;
+    }
+
+    container.innerHTML = "";
+
+    matches.forEach(match => {
+
+      const home = match.home_team_name_en;
+      const away = match.away_team_name_en;
+
+      const homeScore = match.home_score ?? "-";
+      const awayScore = match.away_score ?? "-";
+
+      container.innerHTML += `
         <div class="card">
-            <b>${m.home}</b> vs <b>${m.away}</b><br>
-            ${m.score}
+
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+
+            <div>
+              <b>${home}</b>
+              <div style="color:#00d26a; font-size:12px;">
+                ${getOwner(home)}
+              </div>
+            </div>
+
+            <div style="font-size:20px;">
+              ${homeScore} - ${awayScore}
+            </div>
+
+            <div style="text-align:right;">
+              <b>${away}</b>
+              <div style="color:#00d26a; font-size:12px;">
+                ${getOwner(away)}
+              </div>
+            </div>
+
+          </div>
+
         </div>
-    `;
-});
+      `;
+
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    container.innerHTML =
+      "API error: " + err.message;
+
+  }
+}
+
+loadMatches();
 
 </script>
-
-</body>
-</html>
