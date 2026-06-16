@@ -1,38 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>World Cup Sweepstake</title>
-
-<style>
-body {
-    background: #111;
-    color: white;
-    font-family: Arial, sans-serif;
-    padding: 20px;
-}
-
-.card {
-    background: #1e1e1e;
-    padding: 12px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-}
-
-.owner {
-    color: #00d26a;
-    font-size: 13px;
-    margin-top: 4px;
-}
-</style>
-</head>
-
-<body>
-
-<h1>🏆 World Cup Sweepstake</h1>
-
-<div id="matches">Loading...</div>
-
 <script>
 
 const countryOwners = {
@@ -86,38 +51,64 @@ const countryOwners = {
   "Uzbekistan": "Judah"
 };
 
+function getOwner(teamName) {
+  return countryOwners[teamName] || "Unassigned";
+}
+
 async function loadMatches() {
 
-    const container =
-        document.getElementById("matches");
+  const container = document.getElementById("matches");
 
-    try {
+  try {
 
-        const response =
-            await fetch("https://worldcup26.ir/get/games");
+    const res = await fetch("https://worldcup26.ir/get/games");
+    const data = await res.json();
 
-        const data =
-            await response.json();
+    const matches = data.games;
 
-        console.log("API DATA:", data);
+    container.innerHTML = matches.map(match => {
 
-        container.innerHTML =
-            "<pre>" +
-            JSON.stringify(data, null, 2).slice(0, 2000) +
-            "</pre>";
+      const homeOwner = getOwner(match.home_team_name_en);
+      const awayOwner = getOwner(match.away_team_name_en);
 
-    } catch (err) {
+      return `
+        <div class="card">
 
-        container.innerHTML =
-            "Error: " + err.message;
+          <div style="display:flex; justify-content:space-between;">
 
-        console.error(err);
-    }
+            <div>
+              <div><b>${match.home_team_name_en}</b></div>
+              <div class="owner">${homeOwner}</div>
+            </div>
+
+            <div style="font-size:20px;">
+              ${match.home_score} - ${match.away_score}
+            </div>
+
+            <div style="text-align:right;">
+              <div><b>${match.away_team_name_en}</b></div>
+              <div class="owner">${awayOwner}</div>
+            </div>
+
+          </div>
+
+          <div style="margin-top:8px; font-size:12px; opacity:0.6;">
+            ${match.finished === "TRUE" ? "FT" : "Upcoming"}
+            • Group ${match.group}
+            • ${match.local_date}
+          </div>
+
+        </div>
+      `;
+
+    }).join("");
+
+  } catch (err) {
+    container.innerHTML = "Error loading matches";
+    console.error(err);
+  }
 }
 
 loadMatches();
 
 </script>
-
-</body>
-</html>
