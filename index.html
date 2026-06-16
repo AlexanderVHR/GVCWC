@@ -1,8 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>World Cup Sweepstake</title>
+
+<style>
+body {
+    background: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+.card {
+    background: #1e1e1e;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.owner {
+    color: #00d26a;
+    font-size: 13px;
+    margin-top: 4px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🏆 World Cup Sweepstake</h1>
+
+<div id="matches">Loading...</div>
+
 <script>
+
+const countryOwners = {
+  "Algeria": "Grace",
+  "Argentina": "Richard",
+  "Australia": "Jack",
+  "Austria": "Andrei",
+  "Belgium": "Alex R",
+  "Bosnia and Herzegovina": "Sharon",
+  "Brazil": "Josh",
+  "Canada": "Tanya",
+  "Cape Verde": "Richard",
+  "Colombia": "Corey",
+  "Congo DR": "Bazi",
+  "Croatia": "Alex B",
+  "Curaçao": "Amos",
+  "Czechia": "SJ",
+  "Ecuador": "Corrinne",
+  "Egypt": "Harry",
+  "England": "Sam",
+  "France": "Sharon",
+  "Germany": "Amos",
+  "Ghana": "Andrei",
+  "Haiti": "Tanya",
+  "Iran": "Jack",
+  "Iraq": "Hamish",
+  "Ivory Coast": "Michelle",
+  "Japan": "Serena-Jo",
+  "Jordan": "Serena-Jo",
+  "Mexico": "SJ",
+  "Morocco": "Casey",
+  "Netherlands": "Josh",
+  "New Zealand": "Hope",
+  "Norway": "Hamish",
+  "Panama": "Grace",
+  "Paraguay": "Selena",
+  "Portugal": "Judah",
+  "Qatar": "Ben",
+  "Saudi Arabia": "Hope",
+  "Scotland": "Ben",
+  "Senegal": "Tony",
+  "South Africa": "Sam",
+  "South Korea": "Harry",
+  "Spain": "Bazi",
+  "Sweden": "Alex B",
+  "Switzerland": "Mya",
+  "Tunisia": "Mya",
+  "Turkey": "Corrinne",
+  "United States": "Caseu",
+  "Uruguay": "Michelle",
+  "Uzbekistan": "Judah"
+};
 
 async function loadMatches() {
 
-    const output = document.getElementById("matches");
+    const container =
+        document.getElementById("matches");
 
     try {
 
@@ -12,18 +99,25 @@ async function loadMatches() {
         const data =
             await response.json();
 
-        output.innerHTML =
+        console.log("API DATA:", data);
+
+        container.innerHTML =
             "<pre>" +
-            JSON.stringify(data, null, 2).substring(0, 3000) +
+            JSON.stringify(data, null, 2).slice(0, 2000) +
             "</pre>";
 
     } catch (err) {
 
-        output.innerHTML =
+        container.innerHTML =
             "Error: " + err.message;
+
+        console.error(err);
     }
 }
 
 loadMatches();
 
 </script>
+
+</body>
+</html>
