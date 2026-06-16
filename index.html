@@ -1,77 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>World Cup Sweepstake</title>
-
-<style>
-body{
-    background:#111;
-    color:white;
-    font-family:Arial,sans-serif;
-    padding:20px;
-}
-
-.card{
-    background:#1e1e1e;
-    padding:15px;
-    border-radius:10px;
-    margin-bottom:10px;
-}
-
-.owner{
-    color:#00d26a;
-    font-weight:bold;
-}
-</style>
-
-</head>
-<body>
-
-<h1>🏆 World Cup Sweepstake</h1>
-
-<div id="matches">
-Loading...
-</div>
-
 <script>
 
-const countryOwners = {
-    "Brazil":"Josh",
-    "France":"Sharon",
-    "Germany":"Amos",
-    "England":"Sam",
-    "Argentina":"Richard"
-};
+async function testApi() {
 
-async function loadMatches(){
+    const output = document.getElementById("matches");
 
-    try{
+    try {
 
-        const response =
-            await fetch("https://worldcup26.ir/get/games");
+        const response = await fetch(
+            "https://worldcup26.ir/get/games"
+        );
 
-        const matches =
-            await response.json();
+        output.innerHTML = `
+            Status: ${response.status}<br>
+            OK: ${response.ok}
+        `;
 
-        document.getElementById("matches").innerHTML =
-            "API connected successfully.<br>" +
-            "Matches found: " +
-            matches.length;
+    } catch (error) {
 
-    }
-    catch(err){
-
-        document.getElementById("matches").innerHTML =
-            "API connection failed";
-
-        console.error(err);
+        output.innerHTML = `
+            Error:<br>
+            ${error.message}
+        `;
     }
 }
 
-loadMatches();
+testApi();
 
 </script>
-
-</body>
-</html>
