@@ -1,29 +1,29 @@
 <script>
 
-async function testApi() {
+async function loadMatches() {
 
     const output = document.getElementById("matches");
 
     try {
 
-        const response = await fetch(
-            "https://worldcup26.ir/get/games"
-        );
+        const response =
+            await fetch("https://worldcup26.ir/get/games");
 
-        output.innerHTML = `
-            Status: ${response.status}<br>
-            OK: ${response.ok}
-        `;
+        const data =
+            await response.json();
 
-    } catch (error) {
+        output.innerHTML =
+            "<pre>" +
+            JSON.stringify(data, null, 2).substring(0, 3000) +
+            "</pre>";
 
-        output.innerHTML = `
-            Error:<br>
-            ${error.message}
-        `;
+    } catch (err) {
+
+        output.innerHTML =
+            "Error: " + err.message;
     }
 }
 
-testApi();
+loadMatches();
 
 </script>
